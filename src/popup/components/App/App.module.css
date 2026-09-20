@@ -1,0 +1,27 @@
+.panel { padding: 22px 21px 16px; }
+
+.audioControls {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  align-items: start;
+  gap: 20px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.resetButton {
+  height: var(--control-height);
+  padding: 0 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 18px;
+  color: var(--color-text-primary);
+  background: transparent;
+  cursor: pointer;
+}
+
+.resetButton:hover { border-color: var(--color-accent); }

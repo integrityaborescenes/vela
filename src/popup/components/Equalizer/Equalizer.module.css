@@ -1,0 +1,42 @@
+.equalizer { position: relative; }
+
+.chart {
+  position: relative;
+  height: 212px;
+}
+
+.graph { width: 100%; height: 190px; overflow: visible; }
+.midline { stroke: #444246; stroke-width: 1; }
+.gridLine { stroke: #3a383c; stroke-width: 1; }
+.area { fill: url(#vela-gradient); }
+.curve { fill: none; stroke: var(--color-accent); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.points { position: absolute; inset: 0 0 22px; pointer-events: none; }
+.point { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: #f7f5f6; transform: translate(-50%, -50%); }
+
+.controls { position: absolute; inset: 0 0 0 0; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); }
+
+.band {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.band button {
+  position: absolute;
+  top: 0;
+  bottom: 22px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.band button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+
+.band > span { z-index: 1; color: #aaa7ae; font-size: 12px; font-weight: 600; white-space: nowrap; }

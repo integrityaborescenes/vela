@@ -1,0 +1,40 @@
+.volume {
+  position: relative;
+  height: 212px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.volume output { position: absolute; top: -18px; left: 50%; color: var(--color-text-primary); font-variant-numeric: tabular-nums; transform: translateX(-50%); }
+
+.volume button {
+  display: grid;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 24px;
+  height: 168px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  cursor: pointer;
+  transform: translateX(-50%);
+}
+
+.volume button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+
+.track {
+  position: relative;
+  width: 3px;
+  height: 100%;
+  margin: auto;
+  overflow: visible;
+  border-radius: 999px;
+  background: #535155;
+}
+
+.fill { position: absolute; right: 0; bottom: 0; left: 0; border-radius: inherit; background: var(--color-accent); }
+.thumb { position: absolute; left: 50%; width: 10px; height: 10px; border-radius: 50%; background: #f7f5f6; transform: translateX(-50%); }
+.volume > span:last-child { position: absolute; top: 184px; left: 50%; transform: translateX(-50%); white-space: nowrap; }
