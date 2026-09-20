@@ -2,7 +2,7 @@
 
 .chart {
   position: relative;
-  height: 212px;
+  height: var(--equalizer-chart-height);
 }
 
 .graph { width: 100%; height: 190px; overflow: visible; }

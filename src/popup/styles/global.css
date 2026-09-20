@@ -17,6 +17,9 @@
   --color-border-strong: #65616a;
   --radius-control: 7px;
   --control-height: 32px;
+  --equalizer-grid-height: 168px;
+  --equalizer-chart-height: 212px;
+  --equalizer-label-top: 196px;
 }
 
 * { box-sizing: border-box; }
