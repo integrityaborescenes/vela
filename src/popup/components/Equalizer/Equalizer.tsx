@@ -11,7 +11,7 @@ type EqualizerProps = {
 export function Equalizer({ gains, disabled = false, onGainChange }: EqualizerProps) {
   const points = gains.map((gain, index) => ({
     x: 46 + index * (908 / (FREQUENCIES.length - 1)),
-    y: 16 + ((12 - gain) / 24) * 152,
+    y: 8 + ((12 - gain) / 24) * 152,
   }))
   const curve = createCurve(points)
   const area = `${curve} L ${points.at(-1)?.x} 168 L ${points[0]?.x} 168 Z`
@@ -28,7 +28,7 @@ export function Equalizer({ gains, disabled = false, onGainChange }: EqualizerPr
               <stop offset="100%" stopColor="#e92979" stopOpacity="0" />
             </linearGradient>
           </defs>
-          <line className={styles.midline} x1="0" x2="1000" y1="93" y2="93" />
+          <line className={styles.midline} x1="0" x2="1000" y1="84" y2="84" />
           {points.map((point) => <line className={styles.gridLine} key={point.x} x1={point.x} x2={point.x} y1="0" y2="168" />)}
           <path className={styles.area} d={area} />
           <path className={styles.curve} d={curve} />
@@ -72,7 +72,7 @@ function handlePointerMove(event: PointerEvent<HTMLButtonElement>, index: number
 
 function updateGainFromPointer(event: PointerEvent<HTMLButtonElement>, index: number, onGainChange: EqualizerProps['onGainChange']) {
   const bounds = event.currentTarget.getBoundingClientRect()
-  const position = Math.min(1, Math.max(0, (event.clientY - bounds.top - 16) / 152))
+  const position = Math.min(1, Math.max(0, (event.clientY - bounds.top - 8) / 152))
   onGainChange(index, Math.round(12 - position * 24))
 }
 
