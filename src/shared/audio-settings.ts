@@ -1,4 +1,4 @@
-export const FREQUENCIES = ['31', '63', '125', '250', '500', '1k', '2k', '4k', '8k', '16k'] as const
+export const FREQUENCIES = ['31', '63', '125', '250', '500', '1K', '2K', '4K', '8K', '16K'] as const
 export const TAB_SETTINGS_PREFIX = 'vela:tab:'
 export const PRESETS_STORAGE_KEY = 'vela:presets'
 export const DEFAULT_PRESETS_VERSION_STORAGE_KEY = 'vela:default-presets-version'
