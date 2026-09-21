@@ -9,6 +9,18 @@ const manifest: ManifestV3Export = {
   action: {
     default_title: 'vela',
     default_popup: 'index.html',
+    default_icon: {
+      16: 'icons/vela-prem-bg.png',
+      32: 'icons/vela-prem-bg.png',
+      48: 'icons/vela-prem-bg.png',
+      128: 'icons/vela-prem-bg.png',
+    },
+  },
+  icons: {
+    16: 'icons/vela-prem-bg.png',
+    32: 'icons/vela-prem-bg.png',
+    48: 'icons/vela-prem-bg.png',
+    128: 'icons/vela-prem-bg.png',
   },
   background: {
     service_worker: 'src/background/service-worker.ts',
