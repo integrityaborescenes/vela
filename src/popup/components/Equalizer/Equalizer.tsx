@@ -21,8 +21,10 @@ export function Equalizer({ gains, disabled = false, onGainChange }: EqualizerPr
       <div className={styles.chart}>
         <svg className={styles.graph} viewBox="0 0 1000 190" preserveAspectRatio="none" aria-hidden="true">
           <defs>
-            <linearGradient id="vela-gradient" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#e92979" stopOpacity=".7" />
+            <linearGradient id="vela-gradient" x1="0" x2="0" y1="0" y2="1" colorInterpolation="linearRGB">
+              <stop offset="0%" stopColor="#e92979" stopOpacity=".52" />
+              <stop offset="32%" stopColor="#e92979" stopOpacity=".34" />
+              <stop offset="62%" stopColor="#e92979" stopOpacity=".13" />
               <stop offset="100%" stopColor="#e92979" stopOpacity="0" />
             </linearGradient>
           </defs>

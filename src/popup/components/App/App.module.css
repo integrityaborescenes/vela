@@ -15,18 +15,27 @@
 }
 
 .resetButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 88px;
   height: 30px;
   padding: 0 14px;
-  border: 1px solid #79767c;
-  border-radius: 999px;
-  color: #f1eff2;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #878787;
+  border-radius: 15px;
+  box-shadow: none;
+  outline: 0;
+  color: #fff;
   background: transparent;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  line-height: 1;
+  line-height: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.resetButton:hover { border-color: #bab7bd; }
-.resetButton:active { border-color: var(--color-accent); }
+.resetButton:hover { border-color: #fff; }
+.resetButton:active { border-color: #fff; color: #d7d7d7; }
