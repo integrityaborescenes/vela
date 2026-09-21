@@ -5,8 +5,9 @@ export type PopupAudioMessage =
   | { type: 'VELA_UPDATE_SETTINGS'; tabId: number; settings: TabSettings }
 
 export type OffscreenAudioMessage =
-  | { type: 'VELA_OFFSCREEN_START'; tabId: number; streamId: string; settings: TabSettings }
+  | { type: 'VELA_OFFSCREEN_START'; tabId: number; streamId: string; settings: TabSettings; muted: boolean }
   | { type: 'VELA_OFFSCREEN_UPDATE'; tabId: number; settings: TabSettings }
+  | { type: 'VELA_OFFSCREEN_SET_MUTED'; tabId: number; muted: boolean }
   | { type: 'VELA_OFFSCREEN_STOP'; tabId: number }
 
 export function isPopupAudioMessage(value: unknown): value is PopupAudioMessage {
@@ -18,9 +19,11 @@ export function isOffscreenAudioMessage(value: unknown): value is OffscreenAudio
   if (!isObject(value) || !isValidTabId(value.tabId)) return false
   switch (value.type) {
     case 'VELA_OFFSCREEN_START':
-      return typeof value.streamId === 'string' && value.streamId.length > 0 && isTabSettings(value.settings)
+      return typeof value.streamId === 'string' && value.streamId.length > 0 && isTabSettings(value.settings) && typeof value.muted === 'boolean'
     case 'VELA_OFFSCREEN_UPDATE':
       return isTabSettings(value.settings)
+    case 'VELA_OFFSCREEN_SET_MUTED':
+      return typeof value.muted === 'boolean'
     case 'VELA_OFFSCREEN_STOP':
       return true
     default:

@@ -1,17 +1,21 @@
 import { isTabSettings, type TabSettings } from '../shared/audio-settings'
 import { isOffscreenAudioMessage } from '../shared/audio-messages'
 
-type ActiveAudio = { stream: MediaStream; context: AudioContext; nodes: BiquadFilterNode[]; volume: GainNode }
+type ActiveAudio = { stream: MediaStream; context: AudioContext; nodes: BiquadFilterNode[]; volume: GainNode; muted: boolean; settings: TabSettings }
 const active = new Map<number, ActiveAudio>()
 
 chrome.runtime.onMessage.addListener((message: unknown, sender, sendResponse) => {
   if (sender.id !== chrome.runtime.id || !isOffscreenAudioMessage(message)) return
   if (message.type === 'VELA_OFFSCREEN_START') {
-    void start(message.tabId, message.streamId, message.settings).then(() => sendResponse({ ok: true })).catch(() => sendResponse({ ok: false }))
+    void start(message.tabId, message.streamId, message.settings, message.muted).then(() => sendResponse({ ok: true })).catch(() => sendResponse({ ok: false }))
     return true
   }
   if (message.type === 'VELA_OFFSCREEN_UPDATE' && isTabSettings(message.settings)) {
     applySettings(message.tabId, message.settings)
+    sendResponse({ ok: true })
+  }
+  if (message.type === 'VELA_OFFSCREEN_SET_MUTED') {
+    setMuted(message.tabId, message.muted)
     sendResponse({ ok: true })
   }
   if (message.type === 'VELA_OFFSCREEN_STOP') {
@@ -20,7 +24,7 @@ chrome.runtime.onMessage.addListener((message: unknown, sender, sendResponse) =>
   }
 })
 
-async function start(tabId: number, streamId: string, settings: TabSettings) {
+async function start(tabId: number, streamId: string, settings: TabSettings, muted: boolean) {
   stop(tabId)
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: { mandatory: { chromeMediaSource: 'tab', chromeMediaSourceId: streamId } } as unknown as MediaTrackConstraints,
@@ -40,7 +44,7 @@ async function start(tabId: number, streamId: string, settings: TabSettings) {
   nodes[nodes.length - 1].connect(volume)
   volume.connect(context.destination)
   source.connect(nodes[0])
-  const audio = { stream, context, nodes, volume }
+  const audio = { stream, context, nodes, volume, muted, settings }
   active.set(tabId, audio)
   applySettings(tabId, settings)
   stream.getAudioTracks()[0]?.addEventListener('ended', () => stop(tabId), { once: true })
@@ -55,8 +59,16 @@ async function start(tabId: number, streamId: string, settings: TabSettings) {
 function applySettings(tabId: number, settings: TabSettings) {
   const audio = active.get(tabId)
   if (!audio) return
+  audio.settings = settings
   audio.nodes.forEach((node, index) => { node.gain.value = settings.enabled ? settings.gains[index] : 0 })
-  audio.volume.gain.value = settings.enabled ? settings.volume / 100 : 0
+  audio.volume.gain.value = settings.enabled && !audio.muted ? settings.volume / 100 : 0
+}
+
+function setMuted(tabId: number, muted: boolean) {
+  const audio = active.get(tabId)
+  if (!audio) return
+  audio.muted = muted
+  audio.volume.gain.value = audio.settings.enabled && !muted ? audio.settings.volume / 100 : 0
 }
 
 function stop(tabId: number) {
