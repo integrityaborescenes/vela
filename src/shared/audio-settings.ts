@@ -2,7 +2,8 @@ export const FREQUENCIES = ['31', '63', '125', '250', '500', '1k', '2k', '4k', '
 export const TAB_SETTINGS_PREFIX = 'vela:tab:'
 export const PRESETS_STORAGE_KEY = 'vela:presets'
 export const DEFAULT_PRESETS_VERSION_STORAGE_KEY = 'vela:default-presets-version'
-export const DEFAULT_PRESETS_VERSION = 1
+export const DEFAULT_PRESETS_VERSION = 3
+export const NEUTRAL_PRESET_NAME = 'Нейтральный'
 
 export type TabSettings = {
   gains: number[]
@@ -14,18 +15,28 @@ export type TabSettings = {
 export type SavedPreset = {
   name: string
   settings: TabSettings
+  isBuiltIn?: boolean
 }
 
 export const DEFAULT_SETTINGS: TabSettings = {
   gains: FREQUENCIES.map(() => 0),
   volume: 100,
   enabled: true,
-  selectedPresetName: '',
+  selectedPresetName: NEUTRAL_PRESET_NAME,
 }
 
 export const DEFAULT_PRESETS: SavedPreset[] = [
   {
+    name: NEUTRAL_PRESET_NAME,
+    isBuiltIn: true,
+    settings: {
+      ...DEFAULT_SETTINGS,
+      gains: [...DEFAULT_SETTINGS.gains],
+    },
+  },
+  {
     name: 'Бас',
+    isBuiltIn: true,
     settings: {
       gains: [6, 5, 3, 1, 0, 0, -1, -1, -1, -1],
       volume: 100,
@@ -34,6 +45,7 @@ export const DEFAULT_PRESETS: SavedPreset[] = [
   },
   {
     name: 'Вокал',
+    isBuiltIn: true,
     settings: {
       gains: [-2, -1, 0, 2, 4, 5, 4, 2, 0, -1],
       volume: 100,
@@ -42,6 +54,7 @@ export const DEFAULT_PRESETS: SavedPreset[] = [
   },
   {
     name: 'Рок',
+    isBuiltIn: true,
     settings: {
       gains: [5, 3, -3, -5, -2, 2, 5, 7, 7, 7],
       volume: 100,
@@ -50,6 +63,7 @@ export const DEFAULT_PRESETS: SavedPreset[] = [
   },
   {
     name: 'Электроника',
+    isBuiltIn: true,
     settings: {
       gains: [5, 3, 0, -3, -2, 0, 5, 6, 6, 5],
       volume: 100,
@@ -81,4 +95,5 @@ export function isSavedPreset(value: unknown): value is SavedPreset {
     && preset.name.trim().length > 0
     && preset.name.length <= 40
     && isTabSettings(preset.settings)
+    && (preset.isBuiltIn === undefined || typeof preset.isBuiltIn === 'boolean')
 }

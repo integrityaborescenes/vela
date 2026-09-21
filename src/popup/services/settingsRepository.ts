@@ -33,11 +33,14 @@ export async function getPresets(): Promise<SavedPreset[]> {
 
   if (defaultsVersion === DEFAULT_PRESETS_VERSION) return savedPresets
 
-  const savedNames = new Set(savedPresets.map((preset) => preset.name.trim().toLocaleLowerCase()))
+  const migratedPresets = savedPresets.map((preset) => (
+    isDefaultPreset(preset) ? { ...preset, isBuiltIn: true } : preset
+  ))
+  const savedNames = new Set(migratedPresets.map((preset) => preset.name.trim().toLocaleLowerCase()))
   const missingDefaults = DEFAULT_PRESETS.filter(
     (preset) => !savedNames.has(preset.name.toLocaleLowerCase()),
   )
-  const mergedPresets = [...structuredClone(missingDefaults), ...savedPresets]
+  const mergedPresets = [...structuredClone(missingDefaults), ...migratedPresets]
 
   await chrome.storage.local.set({
     [PRESETS_STORAGE_KEY]: mergedPresets,
@@ -49,4 +52,15 @@ export async function getPresets(): Promise<SavedPreset[]> {
 
 export async function savePresets(presets: SavedPreset[]) {
   await chrome.storage.local.set({ [PRESETS_STORAGE_KEY]: presets })
+}
+
+function isDefaultPreset(preset: SavedPreset) {
+  const defaultPreset = DEFAULT_PRESETS.find(
+    (item) => item.name.toLocaleLowerCase() === preset.name.toLocaleLowerCase(),
+  )
+  if (!defaultPreset) return false
+
+  return defaultPreset.settings.volume === preset.settings.volume
+    && defaultPreset.settings.enabled === preset.settings.enabled
+    && defaultPreset.settings.gains.every((gain, index) => gain === preset.settings.gains[index])
 }

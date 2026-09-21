@@ -57,9 +57,14 @@ export function useTabAudio() {
     const normalizedName = name.trim()
     if (!normalizedName || normalizedName.length > 40) return
 
+    if (presets.some((preset) => preset.isBuiltIn
+      && preset.name.toLocaleLowerCase() === normalizedName.toLocaleLowerCase())) {
+      throw new Error('Нельзя перезаписать встроенный пресет')
+    }
+
     const nextPresets = [
       ...presets.filter((preset) => preset.name.toLocaleLowerCase() !== normalizedName.toLocaleLowerCase()),
-      { name: normalizedName, settings },
+      { name: normalizedName, settings, isBuiltIn: false },
     ]
     await savePresets(nextPresets)
     setPresets(nextPresets)
@@ -72,19 +77,20 @@ export function useTabAudio() {
     selectedPresetName: preset.name,
   }), [updateSettings])
 
-  const deletePreset = useCallback(async (name: string) => {
-    const nextPresets = presets.filter((preset) => preset.name !== name)
-    await savePresets(nextPresets)
-    setPresets(nextPresets)
-    if (settings.selectedPresetName === name) {
-      await updateSettings({ ...settings, selectedPresetName: '' })
-    }
-  }, [presets, settings, updateSettings])
-
   const resetSettings = useCallback(() => updateSettings({
     ...DEFAULT_SETTINGS,
     gains: [...DEFAULT_SETTINGS.gains],
   }), [updateSettings])
+
+  const deletePreset = useCallback(async (name: string) => {
+    if (presets.some((preset) => preset.name === name && preset.isBuiltIn)) return
+    const nextPresets = presets.filter((preset) => preset.name !== name)
+    await savePresets(nextPresets)
+    setPresets(nextPresets)
+    if (settings.selectedPresetName === name) {
+      await resetSettings()
+    }
+  }, [presets, settings.selectedPresetName, resetSettings])
 
   return { settings, presets, status, updateSettings, savePreset, applyPreset, deletePreset, resetSettings }
 }
