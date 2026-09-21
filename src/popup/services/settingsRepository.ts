@@ -1,5 +1,8 @@
 import {
   DEFAULT_SETTINGS,
+  DEFAULT_PRESETS,
+  DEFAULT_PRESETS_VERSION,
+  DEFAULT_PRESETS_VERSION_STORAGE_KEY,
   getTabSettingsKey,
   isSavedPreset,
   isTabSettings,
@@ -20,9 +23,28 @@ export async function saveTabSettings(tabId: number, settings: TabSettings) {
 }
 
 export async function getPresets(): Promise<SavedPreset[]> {
-  const stored = await chrome.storage.local.get(PRESETS_STORAGE_KEY)
+  const stored = await chrome.storage.local.get([
+    PRESETS_STORAGE_KEY,
+    DEFAULT_PRESETS_VERSION_STORAGE_KEY,
+  ])
   const presets: unknown = stored[PRESETS_STORAGE_KEY]
-  return Array.isArray(presets) ? presets.filter(isSavedPreset) : []
+  const savedPresets = Array.isArray(presets) ? presets.filter(isSavedPreset) : []
+  const defaultsVersion = stored[DEFAULT_PRESETS_VERSION_STORAGE_KEY]
+
+  if (defaultsVersion === DEFAULT_PRESETS_VERSION) return savedPresets
+
+  const savedNames = new Set(savedPresets.map((preset) => preset.name.trim().toLocaleLowerCase()))
+  const missingDefaults = DEFAULT_PRESETS.filter(
+    (preset) => !savedNames.has(preset.name.toLocaleLowerCase()),
+  )
+  const mergedPresets = [...structuredClone(missingDefaults), ...savedPresets]
+
+  await chrome.storage.local.set({
+    [PRESETS_STORAGE_KEY]: mergedPresets,
+    [DEFAULT_PRESETS_VERSION_STORAGE_KEY]: DEFAULT_PRESETS_VERSION,
+  })
+
+  return mergedPresets
 }
 
 export async function savePresets(presets: SavedPreset[]) {

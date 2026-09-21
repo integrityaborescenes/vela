@@ -7,7 +7,9 @@
 .dropdown { position: relative; }
 .dropdownTrigger { display: flex; align-items: center; gap: 10px; min-width: 176px; padding: 0; text-align: left; }
 .caret { width: 7px; height: 7px; margin: -4px 0 0 2px; border: solid var(--color-text-primary); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
-.dropdownMenu { position: absolute; top: 25px; left: -10px; z-index: 3; display: grid; min-width: 188px; padding: 6px; border: 1px solid #373538; border-radius: 6px; background: #282828; box-shadow: 0 8px 20px rgb(0 0 0 / 35%); }
+.dropdownMenu { position: absolute; top: 25px; left: -10px; z-index: 3; display: grid; min-width: 188px; max-height: 180px; padding: 6px; overflow-y: auto; overscroll-behavior: contain; border: 1px solid #373538; border-radius: 6px; background: #282828; box-shadow: 0 8px 20px rgb(0 0 0 / 35%); scrollbar-color: #777 #282828; scrollbar-width: thin; }
+.dropdownMenu::-webkit-scrollbar { width: 8px; }
+.dropdownMenu::-webkit-scrollbar-thumb { border: 2px solid #282828; border-radius: 999px; background: #777; }
 .dropdownMenu button { padding: 8px; border-radius: 4px; text-align: left; }
 .dropdownMenu button:hover { color: var(--color-text-primary); background: #3e3e3e; }
 .emptyState { padding: 8px; color: var(--color-text-muted); font-size: 11px; font-weight: 400; }
