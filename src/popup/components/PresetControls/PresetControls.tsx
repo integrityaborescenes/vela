@@ -17,12 +17,21 @@ export function PresetControls({ presets, selectedName, disabled = false, onSave
   const [isListOpen, setIsListOpen] = useState(false)
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
   const selectedPreset = presets.find((preset) => preset.name === selectedName)
+  const isBuiltInPreset = selectedPreset?.isBuiltIn === true
+  const presetGroups = [
+    { label: 'Встроенные', items: presets.filter((preset) => preset.isBuiltIn) },
+    { label: 'Пользовательские', items: presets.filter((preset) => !preset.isBuiltIn) },
+  ].filter((group) => group.items.length > 0)
 
   async function handleSave(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const trimmedName = name.trim()
     if (!trimmedName) return setError('Укажи название пресета')
     if (trimmedName.length > 40) return setError('Название должно быть не длиннее 40 символов')
+    if (presets.some((preset) => preset.isBuiltIn
+      && preset.name.toLocaleLowerCase() === trimmedName.toLocaleLowerCase())) {
+      return setError('Это имя встроенного пресета. Выбери другое название')
+    }
 
     setError('')
     try {
@@ -63,21 +72,32 @@ export function PresetControls({ presets, selectedName, disabled = false, onSave
         <span className={styles.label}>Эффекты</span>
         <div className={styles.dropdown}>
           <button type="button" className={styles.dropdownTrigger} disabled={disabled} onClick={() => setIsListOpen((isOpen) => !isOpen)}>
-            {selectedName || 'Без пресета'}<span className={styles.caret} aria-hidden="true" />
+            <span className={styles.selectedName}>{selectedName || 'Ручная настройка'}</span><span className={styles.caret} aria-hidden="true" />
           </button>
           {isListOpen && (
             <div className={styles.dropdownMenu} role="listbox" aria-label="Сохранённые пресеты">
               {presets.length === 0 && <span className={styles.emptyState}>Нет сохранённых пресетов</span>}
-              {presets.map((preset) => (
-                <button type="button" role="option" aria-selected={preset.name === selectedName} key={preset.name} onClick={() => void handleSelection(preset.name)}>
-                  {preset.name}
-                </button>
+              {presetGroups.map((group) => (
+                <div className={styles.presetGroup} role="group" aria-label={group.label} key={group.label}>
+                  {group.label === 'Пользовательские' && (
+                    <span className={styles.groupLabel} aria-hidden="true">{group.label}</span>
+                  )}
+                  {group.items.map((preset) => (
+                    <button type="button" role="option" aria-selected={preset.name === selectedName} key={preset.name} onClick={() => void handleSelection(preset.name)}>
+                      {preset.name}
+                    </button>
+                  ))}
+                </div>
               ))}
             </div>
           )}
         </div>
-        <button type="button" className={styles.deleteButton} disabled={disabled || !selectedPreset} onClick={() => void handleDelete()}>Удалить пресет</button>
-        <button type="button" className={styles.saveButton} disabled={disabled} onClick={() => setIsSaveDialogOpen(true)}>Сохранить пресет</button>
+        {!selectedPreset && (
+          <button type="button" className={styles.actionButton} disabled={disabled} onClick={() => setIsSaveDialogOpen(true)}>Сохранить пресет</button>
+        )}
+        {selectedPreset && !isBuiltInPreset && (
+          <button type="button" className={styles.actionButton} disabled={disabled} onClick={() => void handleDelete()}>Удалить пресет</button>
+        )}
       </div>
       {error && <p className={styles.error} role="alert">{error}</p>}
       {isSaveDialogOpen && (
