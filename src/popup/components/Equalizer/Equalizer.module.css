@@ -11,7 +11,7 @@
 .area { fill: url(#vela-gradient); }
 .curve { fill: none; stroke: var(--color-accent); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
 .points { position: absolute; inset: 0 0 22px; pointer-events: none; }
-.point { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: #f7f5f6; transform: translate(-50%, -50%); }
+.point { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: #f7f5f6; transform: translate(-50%, -50%); }
 
 .controls { position: absolute; inset: 0 0 0 0; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); }
 

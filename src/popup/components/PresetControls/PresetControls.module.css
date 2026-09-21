@@ -4,7 +4,7 @@
 .actions button { border: 0; color: #d7d4d8; background: transparent; font-size: 12px; font-weight: 600; cursor: pointer; }
 .actions button:hover { color: var(--color-accent); }
 .dropdown { position: relative; }
-.dropdownTrigger { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 108px; padding: 0; text-align: left; }
+.dropdownTrigger { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 132px; padding: 0; text-align: left; }
 .selectedName { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .caret { flex: 0 0 7px; width: 7px; height: 7px; margin: -4px 0 0 2px; border: solid var(--color-text-primary); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
 .dropdownMenu { position: absolute; top: 25px; left: -10px; z-index: 3; display: grid; min-width: 188px; max-height: 180px; padding: 6px; overflow-y: auto; overscroll-behavior: contain; border: 1px solid #373538; border-radius: 6px; background: #282828; box-shadow: 0 8px 20px rgb(0 0 0 / 35%); scrollbar-color: #777 #282828; scrollbar-width: thin; }
