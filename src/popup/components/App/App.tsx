@@ -11,7 +11,7 @@ export function App() {
   function updateGain(index: number, gain: number) {
     const gains = [...audio.settings.gains]
     gains[index] = gain
-    void audio.updateSettings({ ...audio.settings, gains })
+    void audio.updateSettings({ ...audio.settings, gains, selectedPresetName: '' })
   }
 
   return (
@@ -21,6 +21,7 @@ export function App() {
       </p>
       <PresetControls
         presets={audio.presets}
+        selectedName={audio.settings.selectedPresetName ?? ''}
         disabled={controlsDisabled}
         onSave={audio.savePreset}
         onApply={audio.applyPreset}
@@ -30,7 +31,7 @@ export function App() {
         <VolumeControl
           volume={audio.settings.volume}
           disabled={controlsDisabled}
-          onVolumeChange={(volume) => void audio.updateSettings({ ...audio.settings, volume })}
+          onVolumeChange={(volume) => void audio.updateSettings({ ...audio.settings, volume, selectedPresetName: '' })}
         />
         <Equalizer gains={audio.settings.gains} disabled={controlsDisabled} onGainChange={updateGain} />
       </div>

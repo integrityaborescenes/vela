@@ -63,15 +63,23 @@ export function useTabAudio() {
     ]
     await savePresets(nextPresets)
     setPresets(nextPresets)
-  }, [presets, settings])
+    await updateSettings({ ...settings, selectedPresetName: normalizedName })
+  }, [presets, settings, updateSettings])
 
-  const applyPreset = useCallback((preset: SavedPreset) => updateSettings(preset.settings), [updateSettings])
+  const applyPreset = useCallback((preset: SavedPreset) => updateSettings({
+    ...preset.settings,
+    gains: [...preset.settings.gains],
+    selectedPresetName: preset.name,
+  }), [updateSettings])
 
   const deletePreset = useCallback(async (name: string) => {
     const nextPresets = presets.filter((preset) => preset.name !== name)
     await savePresets(nextPresets)
     setPresets(nextPresets)
-  }, [presets])
+    if (settings.selectedPresetName === name) {
+      await updateSettings({ ...settings, selectedPresetName: '' })
+    }
+  }, [presets, settings, updateSettings])
 
   const resetSettings = useCallback(() => updateSettings({
     ...DEFAULT_SETTINGS,

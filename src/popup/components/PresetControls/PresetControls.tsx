@@ -4,15 +4,15 @@ import styles from './PresetControls.module.css'
 
 type PresetControlsProps = {
   presets: SavedPreset[]
+  selectedName: string
   disabled?: boolean
   onSave: (name: string) => Promise<void>
   onApply: (preset: SavedPreset) => Promise<void>
   onDelete: (name: string) => Promise<void>
 }
 
-export function PresetControls({ presets, disabled = false, onSave, onApply, onDelete }: PresetControlsProps) {
+export function PresetControls({ presets, selectedName, disabled = false, onSave, onApply, onDelete }: PresetControlsProps) {
   const [name, setName] = useState('')
-  const [selectedName, setSelectedName] = useState('')
   const [error, setError] = useState('')
   const [isListOpen, setIsListOpen] = useState(false)
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
@@ -27,7 +27,6 @@ export function PresetControls({ presets, disabled = false, onSave, onApply, onD
     setError('')
     try {
       await onSave(trimmedName)
-      setSelectedName(trimmedName)
       setName('')
       setIsSaveDialogOpen(false)
     } catch {
@@ -36,7 +35,6 @@ export function PresetControls({ presets, disabled = false, onSave, onApply, onD
   }
 
   async function handleSelection(name: string) {
-    setSelectedName(name)
     setIsListOpen(false)
     const preset = presets.find((item) => item.name === name)
     if (!preset) return
@@ -54,7 +52,6 @@ export function PresetControls({ presets, disabled = false, onSave, onApply, onD
     setError('')
     try {
       await onDelete(selectedPreset.name)
-      setSelectedName('')
     } catch {
       setError('Не удалось удалить пресет')
     }
